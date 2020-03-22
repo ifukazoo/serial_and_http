@@ -10,6 +10,8 @@ enum Cmd {
     Astro,
 }
 
+static ASTRO_URL: &str = "http://api.open-notify.org/astros.json";
+
 fn main() {
     let args: Vec<OsString> = env::args_os().collect();
 
@@ -25,8 +27,8 @@ fn main() {
     loop {
         match get_cmd() {
             Cmd::Quit => break,
-            _ => {
-                let url = String::from("http://api.open-notify.org/astros.json");
+            Cmd::Astro => {
+                let url = String::from(ASTRO_URL);
                 write_serial(&mut port, &url).unwrap();
             }
         }
