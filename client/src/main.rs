@@ -1,8 +1,7 @@
-extern crate serialport;
+extern crate mylib;
 use std::env;
 use std::ffi::OsString;
 use std::io;
-use std::io::Write;
 use std::process;
 
 enum Cmd {
@@ -21,8 +20,8 @@ fn main() {
     }
 
     let port_name = &args[1];
-    let mut port = serialport::open(port_name).unwrap_or_else(|_| {
-        let err = format!("could not open port {:?}.", port_name);
+    let mut port = mylib::open_serialport(port_name).unwrap_or_else(|e| {
+        let err = format!("could not open port {:?}. reason [{}]", port_name, e);
         eprintln!("{}", err);
         process::exit(1);
     });
@@ -32,32 +31,12 @@ fn main() {
             Cmd::Quit => break,
             Cmd::Astro => {
                 let url = String::from(ASTRO_URL);
-                write_serial(&mut port, &url).unwrap();
+                mylib::write_serial(&mut port, &url).unwrap();
             }
         }
     }
     println!("client exit");
     process::exit(0);
-}
-
-fn write_serial(port: &mut Box<dyn serialport::SerialPort>, s: &str) -> Result<(), io::Error> {
-    let mut data: Vec<u8> = vec![0x2];
-    data.append(&mut String::from(s).into_bytes());
-    data.push(0x3);
-    let mut slice = &data[..];
-    // 送信
-    loop {
-        match port.write(slice) {
-            Ok(size) => {
-                if size == slice.len() {
-                    break;
-                }
-                slice = &data[size..];
-            }
-            Err(e) => return Err(e),
-        }
-    }
-    Ok(())
 }
 
 fn get_cmd() -> Cmd {

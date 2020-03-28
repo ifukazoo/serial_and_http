@@ -46,7 +46,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "client"
 version = "0.1.0"
 dependencies = [
- "serialport 3.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "mylib 0.1.0",
 ]
 
 [[package]]
@@ -97,6 +97,13 @@ dependencies = [
 name = "memchr"
 version = "2.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "mylib"
+version = "0.1.0"
+dependencies = [
+ "serialport 3.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
 
 [[package]]
 name = "nix"
@@ -150,6 +157,9 @@ dependencies = [
 [[package]]
 name = "server"
 version = "0.1.0"
+dependencies = [
+ "mylib 0.1.0",
+]
 
 [[package]]
 name = "thread_local"
