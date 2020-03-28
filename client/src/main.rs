@@ -16,13 +16,16 @@ fn main() {
     let args: Vec<OsString> = env::args_os().collect();
 
     if args.len() < 2 {
-        eprintln!("usage <cmd> <port name>");
+        eprintln!("<cmd> <serial port name>");
         process::exit(1);
     }
 
     let port_name = &args[1];
-    let mut port = serialport::open(port_name).expect(&format!("port[{:?}]", port_name));
-    println!("port {:?} opened.", port_name);
+    let mut port = serialport::open(port_name).unwrap_or_else(|_| {
+        let err = format!("could not open port {:?}.", port_name);
+        eprintln!("{}", err);
+        process::exit(1);
+    });
 
     loop {
         match get_cmd() {
