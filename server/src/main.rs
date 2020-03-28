@@ -18,28 +18,8 @@ fn main() {
         process::exit(1);
     });
     loop {
-        let mut ch = vec![0];
-        let size = port.read(&mut ch).unwrap_or(0);
-        if size == 0 {
-            continue;
-        }
-        if ch[0] == 0x2 {
-            // 電文開始
-            let mut buf: Vec<u8> = vec![];
-            loop {
-                let size = port.read(&mut ch).unwrap_or(0);
-                if size == 0 {
-                    continue;
-                }
-                // println!("{:?}", ch);
-                if ch[0] == 0x3 {
-                    break;
-                }
-                buf.push(ch[0]);
-            }
-            let url = String::from_utf8(buf).unwrap();
-            mylib::write_serial(&mut port, &url).unwrap();
-            println!("{}", url);
-        }
+        let url = mylib::read_from(&mut port).unwrap();
+        println!("data has come. [{}]", url);
+        mylib::write_to(&mut port, &url).unwrap();
     }
 }

@@ -31,11 +31,13 @@ fn main() {
             Cmd::Quit => break,
             Cmd::Astro => {
                 let url = String::from(ASTRO_URL);
-                mylib::write_serial(&mut port, &url).unwrap();
+                mylib::write_to(&mut port, &url).unwrap();
+                let s = mylib::read_from(&mut port).unwrap();
+                println!("{}", s);
             }
         }
     }
-    println!("client exit");
+    println!("exit process.");
     process::exit(0);
 }
 
